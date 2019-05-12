@@ -57,4 +57,25 @@ export class AppComponent {
 }
 ```
 
+## Einstellungen
+
+Der Shortcut der gewünschten Liga bzw. des gewünschten Tourniers wird folgendermaßen gesetzt:
+
+```javascript
+openLigaDB.setLeague("bl1");
+```
+
+Der Standard-Timeout beträgt 20 Sekunden, kann aber angepasst werden:
+
+```javascript
+this.openLigaDB.setTimeout(1000); // setzt den Timeout auf 1 Sekunde
+```
+
+## Funktionen
+
+Eine genaue Auflistung aller Funktionen der Library folgt. Grundsätzlich ist aber jede Schnittstelle, die in folgendem GitHub-Repo unter "API-Schema" aufgelistet wird, implementiert:
+
+https://github.com/OpenLigaDB/OpenLigaDB-Samples
+
+
 
