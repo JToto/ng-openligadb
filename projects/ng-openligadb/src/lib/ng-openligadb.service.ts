@@ -5,9 +5,10 @@ import { MatchData } from './shared/matchData';
 import { Group } from './shared/group';
 import { Team } from "./shared/team";
 import { LeagueNotSet } from './error/LeagueNotSet';
-
 import { GoalGetter } from './shared/goalGetter';
 import { FootballTableTeam } from './shared/footballTableTeam';
+import { timeout } from 'rxjs/operators';
+
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +18,8 @@ export class OpenLigaDBService {
   static readonly OPENLIGADB_URL: string = "https://www.openligadb.de";
 
   private league: string;
+
+  private timeout : number = 20000;
 
   constructor(private http: HttpClient) { }
 
@@ -30,6 +33,10 @@ export class OpenLigaDBService {
     this.league = league;
   }
 
+  setTimeout(timeout : number) {
+    this.timeout = timeout;
+  }
+
   /**
    * Returns match data for the latest match day (groupOrderId) of the league.
    */
@@ -38,7 +45,8 @@ export class OpenLigaDBService {
       try {
         this.checkLeague();
         this.http.get(OpenLigaDBService.OPENLIGADB_URL + "/api/getmatchdata/" +
-          this.league).subscribe(data => {
+          this.league).pipe(
+            timeout(this.timeout)).pipe(timeout(this.timeout)).subscribe(data => {
             resolve(MatchDataMapper.jsonArrayToMatchData(data as Array<any>));
           }, error => reject(error));
       } catch (ex) {
@@ -56,7 +64,7 @@ export class OpenLigaDBService {
       try {
         this.checkLeague();
         this.http.get(OpenLigaDBService.OPENLIGADB_URL + "/api/getmatchdata/" +
-          this.league + "/" + season).subscribe(data => {
+          this.league + "/" + season).pipe(timeout(this.timeout)).subscribe(data => {
             resolve(MatchDataMapper.jsonArrayToMatchData(data as Array<any>));
           }, error => reject(error));
       } catch (ex) {
@@ -75,7 +83,7 @@ export class OpenLigaDBService {
       try {
         this.checkLeague();
         this.http.get(OpenLigaDBService.OPENLIGADB_URL + "/api/getmatchdata/" +
-          this.league + "/" + season + "/" + groupOrderId).subscribe(data => {
+          this.league + "/" + season + "/" + groupOrderId).pipe(timeout(this.timeout)).subscribe(data => {
 
             resolve(MatchDataMapper.jsonArrayToMatchData(data as Array<any>));
           }, error => reject(error));
@@ -91,7 +99,7 @@ export class OpenLigaDBService {
    */
   getSingleMatchData(id: number): Promise<MatchData> {
     return new Promise((resolve, reject) => {
-      this.http.get(OpenLigaDBService.OPENLIGADB_URL + "/api/getmatchdata/" + id).subscribe(data => {
+      this.http.get(OpenLigaDBService.OPENLIGADB_URL + "/api/getmatchdata/" + id).pipe(timeout(this.timeout)).subscribe(data => {
         resolve(MatchDataMapper.jsonToMatchData(data as Array<any>));
       }, error => reject(error));
     });
@@ -104,7 +112,7 @@ export class OpenLigaDBService {
     return new Promise((resolve, reject) => {
       try {
         this.checkLeague();
-        this.http.get(OpenLigaDBService.OPENLIGADB_URL + "/api/getcurrentgroup/" + this.league).subscribe(data => {
+        this.http.get(OpenLigaDBService.OPENLIGADB_URL + "/api/getcurrentgroup/" + this.league).pipe(timeout(this.timeout)).subscribe(data => {
           resolve(MatchDataMapper.jsonToGroup(data as Array<any>));
         }, error => reject(error));
       } catch (ex) {
@@ -121,7 +129,7 @@ export class OpenLigaDBService {
     return new Promise((resolve, reject) => {
       try {
         this.checkLeague();
-        this.http.get(OpenLigaDBService.OPENLIGADB_URL + "/api/getavailablegroups/" + this.league + "/" + season).subscribe(data => {
+        this.http.get(OpenLigaDBService.OPENLIGADB_URL + "/api/getavailablegroups/" + this.league + "/" + season).pipe(timeout(this.timeout)).subscribe(data => {
           resolve(MatchDataMapper.jsonArrayToGroups(data as Array<any>));
         }, error => reject(error));
       } catch (ex) {
@@ -140,7 +148,7 @@ export class OpenLigaDBService {
     return new Promise((resolve, reject) => {
       try {
         this.checkLeague();
-        this.http.get(OpenLigaDBService.OPENLIGADB_URL + "/api/getlastchangedate/" + this.league + "/" + season + "/" + groupOrderId).subscribe(data => {
+        this.http.get(OpenLigaDBService.OPENLIGADB_URL + "/api/getlastchangedate/" + this.league + "/" + season + "/" + groupOrderId).pipe(timeout(this.timeout)).subscribe(data => {
           resolve(new Date(data as string));
         }, error => reject(error));
       } catch (ex) {
@@ -158,7 +166,7 @@ export class OpenLigaDBService {
     return new Promise((resolve, reject) => {
       try {
         this.checkLeague();
-        this.http.get(OpenLigaDBService.OPENLIGADB_URL + "/api/getnextmatchbyleagueteam/" + leagueId + "/" + teamId).subscribe(data => {
+        this.http.get(OpenLigaDBService.OPENLIGADB_URL + "/api/getnextmatchbyleagueteam/" + leagueId + "/" + teamId).pipe(timeout(this.timeout)).subscribe(data => {
           resolve(MatchDataMapper.jsonToMatchData(data as Array<any>));
         }, error => reject(error));
       } catch (ex) {
@@ -175,7 +183,7 @@ export class OpenLigaDBService {
     return new Promise((resolve, reject) => {
       try {
         this.checkLeague();
-        this.http.get(OpenLigaDBService.OPENLIGADB_URL + "/api/getavailableteams/" + this.league + "/" + season).subscribe(data => {
+        this.http.get(OpenLigaDBService.OPENLIGADB_URL + "/api/getavailableteams/" + this.league + "/" + season).pipe(timeout(this.timeout)).subscribe(data => {
           resolve(MatchDataMapper.jsonArrayToTeams(data as Array<any>));
         }, error => reject(error));
       } catch (ex) {
@@ -192,7 +200,7 @@ export class OpenLigaDBService {
   getMatchDataForTeams(team1Id: number, team2Id): Promise<MatchData[]> {
     return new Promise((resolve, reject) => {
       try {
-        this.http.get(OpenLigaDBService.OPENLIGADB_URL + "/api/getmatchdata/" + team1Id + "/" + team2Id).subscribe(data => {
+        this.http.get(OpenLigaDBService.OPENLIGADB_URL + "/api/getmatchdata/" + team1Id + "/" + team2Id).pipe(timeout(this.timeout)).subscribe(data => {
           resolve(MatchDataMapper.jsonArrayToMatchData(data as Array<any>));
         }, error => reject(error));
       } catch (ex) {
@@ -209,7 +217,7 @@ export class OpenLigaDBService {
     return new Promise((resolve, reject) => {
       try {
         this.checkLeague();
-        this.http.get(OpenLigaDBService.OPENLIGADB_URL + "/api/getgoalgetters/" + this.league + "/" + season).subscribe(data => {
+        this.http.get(OpenLigaDBService.OPENLIGADB_URL + "/api/getgoalgetters/" + this.league + "/" + season).pipe(timeout(this.timeout)).subscribe(data => {
           resolve(MatchDataMapper.jsonArrayToGoalGetters(data as Array<any>));
         }, error => reject(error));
       } catch (ex) {
@@ -226,7 +234,7 @@ export class OpenLigaDBService {
     return new Promise((resolve, reject) => {
       try {
         this.checkLeague();
-        this.http.get(OpenLigaDBService.OPENLIGADB_URL + "/api/getbltable/" + this.league + "/" + season).subscribe(data => {
+        this.http.get(OpenLigaDBService.OPENLIGADB_URL + "/api/getbltable/" + this.league + "/" + season).pipe(timeout(this.timeout)).subscribe(data => {
           resolve(MatchDataMapper.jsonArrayToFootballTableTeams(data as Array<any>));
         }, error => reject(error));
       } catch (ex) {

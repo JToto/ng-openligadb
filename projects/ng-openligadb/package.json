@@ -7,10 +7,10 @@
   "homepage": "https://github.com/JToto/ng-openligadb/issues",
   "license": "MIT",
   "description": "Angular service to access data from www.openligadb.de",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "peerDependencies": {
     "@angular/common": "^7.2.0",
-    "@angular/common/http": "^7.2.0",
     "@angular/core": "^7.2.0"
-  }
+  },
+  "dependencies": {}
 }

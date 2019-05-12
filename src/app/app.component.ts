@@ -17,6 +17,7 @@ export class AppComponent {
       let that : AppComponent  = this;
       this.openLigaDB = openLigaDB;
       this.openLigaDB.setLeague("bl1");
+      this.openLigaDB.setTimeout(10000);
 
       this.openLigaDB.getMatchData("2018", 31).then(function(result) {
         console.log("Match data for bl1, 2018, 31:", result);
